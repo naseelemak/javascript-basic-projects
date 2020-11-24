@@ -7,7 +7,7 @@ const container = document.querySelector(".grocery-container");
 const list = document.querySelector(".grocery-list");
 const clearBtn = document.querySelector(".clear-btn");
 
-// edit option
+// edit options
 let editElement;
 let editFlag = false;
 let editID = "";
@@ -57,7 +57,11 @@ function addItem(e) {
     // set back to default
     setBackToDefault();
   } else if (value && editFlag) {
-    console.log("editing");
+    editElement.innerHTML = value;
+    displayAlert("value changed", "success");
+    // edit local storage
+    editLocalStorage(editID, value);
+    setBackToDefault();
   } else {
     displayAlert("please enter value", "danger");
   }
@@ -112,8 +116,8 @@ function editItem(e) {
   editElement = e.currentTarget.parentElement.previousElementSibling;
   // set form value
   grocery.value = editElement.innerHTML;
-  let editFlag = true;
-  let editID = element.dataset.id;
+  editFlag = true;
+  editID = element.dataset.id;
   submitBtn.textContent = "edit";
 }
 
@@ -128,18 +132,21 @@ function setBackToDefault() {
 
 // ****** LOCAL STORAGE **********
 function addToLocalStorage(id, value) {
-  //Check to if there is an existing todo list
-  /* let todoList;
-  if (!localStorage.getItem("todo-list")) {
-    todoList = [];
-  } else {
-    todoList = JSON.parse(localStorage.getItem("todo-list"));
-  }
+  const grocery = { id, value }; // shorthand used
+  //Check to if there is an existing list
+  let items = getLocalStorage();
 
-  todoList.push(todo);
-  localStorage.setItem("todo-list", JSON.stringify(todoList)); */
+  console.log(items);
+
+  items.push(grocery);
+  localStorage.setItem("list", JSON.stringify(items));
 }
 
 function removeFromLocalStorage(id) {}
-
+function editLocalStorage(id, value) {}
+function getLocalStorage() {
+  return localStorage.getItem("list")
+    ? JSON.parse(localStorage.getItem("list"))
+    : [];
+}
 // ****** SETUP ITEMS **********
